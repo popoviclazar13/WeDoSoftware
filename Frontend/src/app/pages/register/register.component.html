@@ -1,0 +1,16 @@
+<app-navbar></app-navbar>
+<section>
+  <div class="auth-container">
+    <h2>Registracija</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <input type="text" formControlName="username" placeholder="Ime i prezime" required />
+      <input type="email" formControlName="email" placeholder="Email" required />
+      <input type="password" formControlName="password" placeholder="Lozinka" required />
+      <button type="submit" [disabled]="registerForm.invalid">Registruj se</button>
+      <p class="switch-link">
+        Već imaš nalog?
+        <a routerLink="/login">Uloguj se</a>
+      </p>
+    </form>
+  </div>
+</section>

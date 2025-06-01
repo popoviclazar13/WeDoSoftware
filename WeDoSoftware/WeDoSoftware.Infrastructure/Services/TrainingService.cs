@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeDoSoftware.Application.DTOs.TrainingDTO;
+using WeDoSoftware.Application.Exceptions;
 using WeDoSoftware.Application.ServiceInterfaces;
 using WeDoSoftware.Domain.Entities;
 using WeDoSoftware.Infrastructure.Data;
@@ -14,24 +16,16 @@ namespace WeDoSoftware.Infrastructure.Services
     public class TrainingService : ITrainingService
     {
         private readonly TrainingTrackerDbContext _context;
+        private readonly IMapper _mapper;
 
-        public TrainingService(TrainingTrackerDbContext context)
+        public TrainingService(TrainingTrackerDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         public async Task<int> CreateAsync(CreateTrainingDto dto)
         {
-            var training = new Training
-            {
-                UserId = dto.UserId,
-                DateTime = dto.DateTime,
-                ExerciseType = dto.ExerciseType,
-                DurationInMinutes = dto.DurationInMinutes,
-                Calories = dto.Calories,
-                Intensity = dto.Intensity,
-                Fatigue = dto.Fatigue,
-                Notes = dto.Notes
-            };
+            var training = _mapper.Map<Training>(dto);
 
             _context.Trainings.Add(training);
             await _context.SaveChangesAsync();
@@ -42,53 +36,28 @@ namespace WeDoSoftware.Infrastructure.Services
         public async Task DeleteAsync(int id)
         {
             var training = await _context.Trainings.FindAsync(id);
-            if (training != null)
+            if (training == null)
             {
-                _context.Trainings.Remove(training);
-                await _context.SaveChangesAsync();
+                throw new NotFoundException($"Training with id {id} not found.");
             }
-            else
-            {
-                throw new KeyNotFoundException($"Training with id {id} not found.");
-            }
+
+            _context.Trainings.Remove(training);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<TrainingDto>> GetAllAsync()
         {
-            return await _context.Trainings
-                .Select(t => new TrainingDto
-                {
-                    Id = t.Id,
-                    UserId = t.UserId,
-                    DateTime = t.DateTime,
-                    ExerciseType = t.ExerciseType,
-                    DurationInMinutes = t.DurationInMinutes,
-                    Calories = t.Calories,
-                    Intensity = t.Intensity,
-                    Fatigue = t.Fatigue,
-                    Notes = t.Notes
-                })
-                .ToListAsync();
+            var trainings = await _context.Trainings.ToListAsync();
+            return _mapper.Map<IEnumerable<TrainingDto>>(trainings);
         }
 
         public async Task<TrainingDto> GetByIdAsync(int id)
         {
-            var t = await _context.Trainings.FindAsync(id);
-            if (t == null)
-                return null;
+            var training = await _context.Trainings.FindAsync(id);
+            if (training == null)
+                throw new NotFoundException($"Training with ID {id} not found.");
 
-            return new TrainingDto
-            {
-                Id = t.Id,
-                UserId = t.UserId,
-                DateTime = t.DateTime,
-                ExerciseType = t.ExerciseType,
-                DurationInMinutes = t.DurationInMinutes,
-                Calories = t.Calories,
-                Intensity = t.Intensity,
-                Fatigue = t.Fatigue,
-                Notes = t.Notes
-            };
+            return _mapper.Map<TrainingDto>(training);
         }
 
         public async Task UpdateAsync(int id, UpdateTrainingDto dto)
@@ -96,17 +65,10 @@ namespace WeDoSoftware.Infrastructure.Services
             var training = await _context.Trainings.FindAsync(id);
             if (training == null)
             {
-                throw new KeyNotFoundException($"Training with id {id} not found.");
+                throw new NotFoundException($"Training with id {id} not found.");
             }
 
-            training.UserId = dto.UserId;
-            training.DateTime = dto.DateTime;
-            training.ExerciseType = dto.ExerciseType;
-            training.DurationInMinutes = dto.DurationInMinutes;
-            training.Calories = dto.Calories;
-            training.Intensity = dto.Intensity;
-            training.Fatigue = dto.Fatigue;
-            training.Notes = dto.Notes;
+            _mapper.Map(dto, training);
 
             await _context.SaveChangesAsync();
         }
