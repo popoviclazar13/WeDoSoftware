@@ -1,0 +1,12 @@
+﻿using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using WeDoSoftware.Application.DTOs.TrainingDTO;
+
+namespace WeDoSoftware.Application.Commands.Trainings
+{
+    public record UpdateTrainingCommand(int Id, UpdateTrainingDto Dto) : IRequest;
+}

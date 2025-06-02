@@ -1,0 +1,232 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+}
+
+.top-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  width: 100%;
+}
+
+.top-row .section {
+  flex: 1 1 45%;
+}
+
+.bottom-row {
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+/* H2-H4 naslovi */
+h2, h3, h4 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+/* Forma - koristi flex-direction column (kao pre) */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Input i select unutar bilo koje sekcije */
+input,
+select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* Ograničena širina select elemenata */
+.section form select {
+  width: 180px !important;
+  max-width: 100%;
+  flex: none;
+}
+
+/* Ograničena širina i za inpute */
+.section form input {
+  max-width: 200px;
+  flex: none;
+}
+
+/* Dugme */
+button {
+  align-self: start;
+  background-color: #1976d2;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #115293;
+}
+
+/* Lista treninga */
+.training-list ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.training-list li {
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.training-list li:hover {
+  background-color: #f0f0f0;
+}
+
+.training-list li.selected {
+  background-color: #d0ebff;
+  font-weight: bold;
+}
+
+/* Tabela sa statistikama */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+th {
+  background-color: #f0f0f0;
+}
+
+/* Responsivnost */
+@media (max-width: 768px) {
+  .top-row .section {
+    flex: 1 1 100%;
+  }
+}
+
+/* Navbar */
+.navbar {
+  background-color: #1976d2;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.user-greeting {
+  font-weight: bold;
+}
+
+.navbar button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Filter meseca */
+.monthly-filter-wrapper {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.monthly-filter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.monthly-filter label {
+  font-weight: bold;
+  color: #333;
+}
+
+/* ====== OVDE DODAJEMO POSEBAN STIL ZA TRAINING SECTION ====== */
+
+/* Formu unutar training sekcije napraviti u dve kolone */
+.section.training form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* Svi input i select unutar trening forme neka zadrže prethodne dimenzije (max-width) */
+.section.training form input,
+.section.training form select {
+  max-width: 200px;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Labeli neka zauzimaju celu širinu */
+.section.training form label {
+  grid-column: span 1/2;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Dugme neka bude na početku prve kolone */
+.section.training form button {
+  grid-column: 1 / 2;
+  justify-self: start;
+}
+
+/* Textarea da zauzima obe kolone i bude veća */
+.section.training form textarea {
+  grid-column: span 2;
+  width: 100%;
+  height: 120px;
+  resize: vertical;
+  max-width: 100%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: Arial, sans-serif;
+}
+
+/* Responsivnost za training sekciju - na mobilnim sve u jedan kolonu */
+@media (max-width: 768px) {
+  .section.training form {
+    grid-template-columns: 1fr;
+  }
+  .section.training form textarea {
+    grid-column: auto;
+    height: 100px;
+  }
+}

@@ -11,6 +11,10 @@ using WeDoSoftware.Infrastructure.Repositories;
 using WeDoSoftware.Infrastructure.Services;
 using WeDoSoftware.Infrastructure.Settings;
 using WeDoSoftware.WebApi.Middleware;
+//
+using MediatR;
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +30,13 @@ builder.Services.AddScoped<ITrainingService, TrainingService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
-
+//
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    cfg.RegisterServicesFromAssembly(typeof(CreateUserCommand).Assembly);
+});
+//
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
 

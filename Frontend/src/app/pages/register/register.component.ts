@@ -20,20 +20,13 @@ export class RegisterComponent {
     private userService: UserService,
     private router: Router
   ) {
-    console.log('RegisterComponent učitan');
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]], //mora ici @ u mail!!!
       password: ['', Validators.required]
     });
   }
-  consoleTest() {
-    console.log('Klik dugmeta radi.');
-  }
-
   onSubmit(): void {
-    alert('klik');
-    console.log('Submit kliknut');
     if (this.registerForm.valid) {
       const formValue = this.registerForm.value;
       this.userService.createUser(formValue).subscribe({

@@ -9,68 +9,71 @@ using WeDoSoftware.Application.DTOs.TrainingDTO;
 using WeDoSoftware.Application.Exceptions;
 using WeDoSoftware.Application.ServiceInterfaces;
 using WeDoSoftware.Domain.Entities;
-using WeDoSoftware.Infrastructure.Data;
+using WeDoSoftware.Domain.RepositoryInterfaces;
 
 namespace WeDoSoftware.Infrastructure.Services
 {
     public class TrainingService : ITrainingService
     {
-        private readonly TrainingTrackerDbContext _context;
+        private readonly ITrainingSessionRepository _trainingRepository;
         private readonly IMapper _mapper;
 
-        public TrainingService(TrainingTrackerDbContext context, IMapper mapper)
+        public TrainingService(ITrainingSessionRepository trainingRepository, IMapper mapper)
         {
-            _context = context;
+            _trainingRepository = trainingRepository;
             _mapper = mapper;
         }
         public async Task<int> CreateAsync(CreateTrainingDto dto)
         {
             var training = _mapper.Map<Training>(dto);
-
-            _context.Trainings.Add(training);
-            await _context.SaveChangesAsync();
-
+            await _trainingRepository.AddAsync(training);
             return training.Id;
         }
 
         public async Task DeleteAsync(int id)
         {
-            var training = await _context.Trainings.FindAsync(id);
+            var training = await _trainingRepository.GetByIdAsync(id);
             if (training == null)
-            {
                 throw new NotFoundException($"Training with id {id} not found.");
-            }
 
-            _context.Trainings.Remove(training);
-            await _context.SaveChangesAsync();
+            await _trainingRepository.DeleteAsync(id);
         }
 
         public async Task<IEnumerable<TrainingDto>> GetAllAsync()
         {
-            var trainings = await _context.Trainings.ToListAsync();
+            var trainings = await _trainingRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<TrainingDto>>(trainings);
+        }
+
+        public async Task<IEnumerable<TrainingDto>> GetAllByUserIdAsync(int userId)
+        {
+            var trainings = await _trainingRepository.GetAllByUserIdAsync(userId);
             return _mapper.Map<IEnumerable<TrainingDto>>(trainings);
         }
 
         public async Task<TrainingDto> GetByIdAsync(int id)
         {
-            var training = await _context.Trainings.FindAsync(id);
+            var training = await _trainingRepository.GetByIdAsync(id);
             if (training == null)
                 throw new NotFoundException($"Training with ID {id} not found.");
 
             return _mapper.Map<TrainingDto>(training);
         }
 
+        public async Task<IEnumerable<TrainingDto>> GetByUserAndMonthAsync(int userId, int year, int month)
+        {
+            var trainings = await _trainingRepository.GetByUserAndMonthAsync(userId, year, month);
+            return _mapper.Map<IEnumerable<TrainingDto>>(trainings);
+        }
+
         public async Task UpdateAsync(int id, UpdateTrainingDto dto)
         {
-            var training = await _context.Trainings.FindAsync(id);
+            var training = await _trainingRepository.GetByIdAsync(id);
             if (training == null)
-            {
                 throw new NotFoundException($"Training with id {id} not found.");
-            }
 
             _mapper.Map(dto, training);
-
-            await _context.SaveChangesAsync();
+            await _trainingRepository.UpdateAsync(training);
         }
 
     }

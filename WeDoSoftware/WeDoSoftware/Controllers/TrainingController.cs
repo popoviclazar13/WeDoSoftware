@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using WeDoSoftware.Application.Commands.Trainings;
 using WeDoSoftware.Application.DTOs.TrainingDTO;
+using WeDoSoftware.Application.Queries.Trainings;
 using WeDoSoftware.Application.ServiceInterfaces;
 
 namespace WeDoSoftware.WebApi.Controllers
@@ -8,7 +11,7 @@ namespace WeDoSoftware.WebApi.Controllers
     [Route("api/trainings")]
     public class TrainingController : ControllerBase
     {
-        private readonly ITrainingService _trainingService;
+        /*private readonly ITrainingService _trainingService;
 
         public TrainingController(ITrainingService trainingService)
         {
@@ -49,6 +52,61 @@ namespace WeDoSoftware.WebApi.Controllers
         {
             await _trainingService.DeleteAsync(id);
             return NoContent();
+        }*/
+        private readonly IMediator _mediator;
+
+        public TrainingController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllTrainings()
+        {
+            var query = new GetAllTrainingsQuery();
+            var trainings = await _mediator.Send(query);
+            return Ok(trainings);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTrainingById(int id)
+        {
+            var query = new GetTrainingByIdQuery(id);
+            var training = await _mediator.Send(query);
+            return Ok(training);
+        }
+        [HttpGet("by-user-and-month")]
+        public async Task<IActionResult> GetTrainingsByUserAndMonth([FromQuery] int userId, [FromQuery] int year, [FromQuery] int month)
+        {
+            var query = new GetTrainingsByUserAndMonthQuery(userId, year, month);
+            var trainings = await _mediator.Send(query);
+            return Ok(trainings);
+        }
+        [HttpGet("by-user/{userId}")]
+        public async Task<IActionResult> GetAllTrainingsByUserId(int userId)
+        {
+            var query = new GetAllTrainingsByUserIdQuery(userId);
+            var trainings = await _mediator.Send(query);
+            return Ok(trainings);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateTraining([FromBody] CreateTrainingDto dto)
+        {
+            var command = new CreateTrainingCommand(dto);
+            await _mediator.Send(command);
+            return Ok("Training successfully created.");
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTraining(int id, [FromBody] UpdateTrainingDto dto)
+        {
+            var command = new UpdateTrainingCommand(id, dto);
+            await _mediator.Send(command);
+            return Ok("Training successfully updated.");
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTraining(int id)
+        {
+            var command = new DeleteTrainingCommand(id);
+            await _mediator.Send(command);
+            return Ok("Training successfully deleted.");
         }
     }
 }

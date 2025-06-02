@@ -1,1 +1,90 @@
-<p>dashbord works!</p>
+<nav class="navbar">
+  <div class="navbar-content">
+    <span class="user-greeting">Logged in as: {{ loggedInUser?.username }}</span>
+    <button (click)="logout()">Logout</button>
+  </div>
+</nav>
+<section class="dashboard-container">
+  <!-- First row: user and training input -->
+  <div class="top-row">
+    <div class="section user-info">
+      <h2>User Information</h2>
+      <form [formGroup]="userForm" (ngSubmit)="onUserSubmit()">
+        <input formControlName="username" placeholder="Username">
+        <input formControlName="email" placeholder="Email">
+        <input formControlName="password" placeholder="New password">
+        <button type="submit">Save Changes</button>
+      </form>
+    </div>
+
+    <div class="section training">
+      <h2>Trainings</h2>
+      <form [formGroup]="trainingForm" (ngSubmit)="onTreningSubmit()">
+        <select formControlName="exerciseType" required>
+          <option value="" disabled selected>Select training type</option>
+          <option *ngFor="let type of exerciseTypes" [value]="type.value">
+            {{ type.label }}
+          </option>
+        </select>
+
+        <label for="intensity">Intensity: {{ trainingForm.get('intensity')?.value }}</label>
+        <input formControlName="intensity" id="intensity" type="range" min="1" max="10" step="1">
+
+        <label for="fatigue">Fatigue: {{ trainingForm.get('fatigue')?.value }}</label>
+        <input formControlName="fatigue" id="fatigue" type="range" min="1" max="10" step="1">
+
+        <input formControlName="durationInMinutes"  placeholder="Duration (min)">
+        <input formControlName="calories"  placeholder="Calories burned">
+        <input formControlName="dateTime" type="datetime-local">
+
+        <textarea formControlName="notes" placeholder="Write your note or feedback about the training..."></textarea>
+
+        <button type="submit">{{ selectedTraining ? 'Edit Training' : 'Save Training' }}</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Second row: training list + stats -->
+  <div class="bottom-row">
+    <div class="training-list">
+      <div class="monthly-filter">
+        <label for="monthFilter">Select month:</label>
+        <input id="monthFilter" type="month" (change)="onMonthInputChange($event)">
+      </div>
+
+      <div *ngIf="weeklyStats.length > 0">
+        <h4>Statistics for month: {{ selectedMonth }}</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Week</th>
+              <th>Total Duration (min)</th>
+              <th>Number of Trainings</th>
+              <th>Average Intensity</th>
+              <th>Average Fatigue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stat of weeklyStats">
+              <td>{{ stat.week }}</td>
+              <td>{{ stat.totalDuration }}</td>
+              <td>{{ stat.totalTrainings }}</td>
+              <td>{{ stat.avgIntensity }}</td>
+              <td>{{ stat.avgFatigue }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Training List</h3>
+      <ul>
+        <li 
+          *ngFor="let training of userTrainings"
+          [class.selected]="training.id === selectedTraining?.id"
+          (click)="onSelectTraining(training)">
+          {{ training.dateTime | date: 'dd.MM.yyyy' }} - {{ getExerciseTypeName(training.exerciseType) }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>

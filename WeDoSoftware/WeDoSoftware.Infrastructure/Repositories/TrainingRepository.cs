@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,29 +18,52 @@ namespace WeDoSoftware.Infrastructure.Repositories
             _context = context;
         }
 
-        public Task AddAsync(Training session)
+        public async Task AddAsync(Training session)
         {
-            throw new NotImplementedException();
+            await _context.Trainings.AddAsync(session);
+            await _context.SaveChangesAsync();
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var session = await _context.Trainings.FindAsync(id);
+            if (session != null)
+            {
+                _context.Trainings.Remove(session);
+                await _context.SaveChangesAsync();
+            }
         }
 
-        public Task<Training?> GetByIdAsync(int id)
+        public async Task<IEnumerable<Training>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Trainings.ToListAsync();
         }
 
-        public Task<IEnumerable<Training>> GetByUserAndMonthAsync(int userId, int year, int month)
+        public async Task<IEnumerable<Training>> GetAllByUserIdAsync(int userId)
         {
-            throw new NotImplementedException();
+            return await _context.Trainings
+                .Where(t => t.UserId == userId)
+                .ToListAsync();
         }
 
-        public Task UpdateAsync(Training session)
+        public async Task<Training?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Trainings.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Training>> GetByUserAndMonthAsync(int userId, int year, int month)
+        {
+            return await _context.Trainings
+                .Where(t => t.UserId == userId &&
+                            t.DateTime.Year == year &&
+                            t.DateTime.Month == month)
+                .ToListAsync();
+        }
+
+        public async Task UpdateAsync(Training session)
+        {
+            _context.Trainings.Update(session);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,10 +1,10 @@
 <app-navbar></app-navbar>
 <section class="auth-container">
-    <h2>Prijava</h2>
-    <form>
-      <input type="email" placeholder="Email" required>
-      <input type="password" placeholder="Lozinka" required>
-      <button type="submit">Uloguj se</button>
-      <p>Nemaš nalog? <a routerLink="/register">Registruj se</a></p>
-    </form>
-  </section>
+  <h2>Prijava</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <input type="email" formControlName="email" placeholder="Email" required>
+    <input type="password" formControlName="password" placeholder="Lozinka" required>
+    <button type="submit">Uloguj se</button>
+    <p>Nemaš nalog? <a routerLink="/register">Registruj se</a></p>
+  </form>
+</section>

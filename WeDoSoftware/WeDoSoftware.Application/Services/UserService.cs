@@ -9,51 +9,47 @@ using WeDoSoftware.Application.DTOs.UserDTOs;
 using WeDoSoftware.Application.Exceptions;
 using WeDoSoftware.Application.ServiceInterfaces;
 using WeDoSoftware.Domain.Entities;
-using WeDoSoftware.Infrastructure.Data;
+using WeDoSoftware.Domain.RepositoryInterfaces;
 
 namespace WeDoSoftware.Infrastructure.Services
 {
     public class UserService : IUserService
     {
-        private readonly TrainingTrackerDbContext _context;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public UserService(TrainingTrackerDbContext context, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
-            _context = context;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
         public async Task<int> CreateAsync(CreateUserDto dto)
         {
             var user = _mapper.Map<User>(dto);
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
+            await _userRepository.AddAsync(user);
             return user.Id;
         }
 
         public async Task DeleteAsync(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
                 throw new NotFoundException($"User with id {id} not found.");
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            await _userRepository.DeleteAsync(user.Id);
         }
 
         public async Task<IEnumerable<UserDto>> GetAllAsync()
         {
-            var users = await _context.Users.ToListAsync();
+            var users = await _userRepository.GetAllAsync();
             return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
         public async Task<UserDto> GetByIdAsync(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
                 throw new NotFoundException($"User with ID {id} not found.");
 
@@ -62,22 +58,18 @@ namespace WeDoSoftware.Infrastructure.Services
 
         public async Task UpdateAsync(int id, UpdateUserDto dto)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
-            {
                 throw new NotFoundException($"User with id {id} not found.");
-            }
 
             _mapper.Map(dto, user);
-
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
+            await _userRepository.UpdateAsync(user);
         }
         public async Task<User?> ValidateUserAsync(string email, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _userRepository.GetByEmailAsync(email);
 
-            if (user == null || user.Password != password) 
+            if (user == null || user.Password != password)
                 return null;
 
             return user;

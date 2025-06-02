@@ -5,6 +5,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    display: flex;             
+    align-items: center; 
   }
   
   .navbar .logo {
@@ -22,4 +24,10 @@
   
   .navbar nav a:hover {
     color: #ff4d4d;
+  }
+
+  .navbar nav a mat-icon {
+    font-size: 1.2rem;        
+    vertical-align: middle;   
+    line-height: 1;           
   }

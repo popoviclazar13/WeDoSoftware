@@ -14,5 +14,7 @@ namespace WeDoSoftware.Application.ServiceInterfaces
         Task<int> CreateAsync(CreateTrainingDto dto);
         Task UpdateAsync(int id, UpdateTrainingDto dto);
         Task DeleteAsync(int id);
+        Task<IEnumerable<TrainingDto>> GetAllByUserIdAsync(int userId);
+        Task<IEnumerable<TrainingDto>> GetByUserAndMonthAsync(int userId, int year, int month);
     }
 }
