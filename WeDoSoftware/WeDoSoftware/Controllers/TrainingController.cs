@@ -18,7 +18,6 @@ namespace WeDoSoftware.WebApi.Controllers
             _trainingService = trainingService;
         }
 
-        // GET: api/training
         [HttpGet]
         public async Task<IEnumerable<TrainingDto>> GetAll()
         {
@@ -39,14 +38,12 @@ namespace WeDoSoftware.WebApi.Controllers
             var trainingId = await _trainingService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = trainingId }, dto);
         }
-        // PUT: api/training/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateTrainingDto dto)
         {
             await _trainingService.UpdateAsync(id, dto);
             return NoContent();
         }
-        // DELETE: api/training/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

@@ -5,5 +5,5 @@ export interface User {
     username: string;
     email: string;
     password: string;
-    trainings: Training[]; // ili: trainings?: Training[]; ako je opciono
+    trainings: Training[]; 
   }

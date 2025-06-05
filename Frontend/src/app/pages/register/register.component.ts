@@ -31,11 +31,11 @@ export class RegisterComponent {
       const formValue = this.registerForm.value;
       this.userService.createUser(formValue).subscribe({
         next: () => {
-          console.log('Uspešna registracija');
+          console.log('Registered succesfully');
           this.router.navigate(['/login']); 
         },
         error: err => {
-          console.error('Greška prilikom registracije:', err);
+          console.error('Error while registering:', err);
         }
       });
     }

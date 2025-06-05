@@ -32,21 +32,18 @@ namespace WeDoSoftware.WebApi.Controllers
 
             return Ok(user);
         }
-        // POST: api/user
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserDto dto)
         {
             var userId = await _userService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = userId }, dto);
         }
-        // PUT: api/user/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateUserDto dto)
         {
             await _userService.UpdateAsync(id, dto);
             return NoContent();
         }
-        // DELETE: api/user/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

@@ -29,6 +29,7 @@ export class LoginComponent {
     });
   }
 
+
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
@@ -36,7 +37,7 @@ export class LoginComponent {
           localStorage.setItem('token', response.token);
   
           const decoded: JwtPayload | null = this.jwtHelper.decodeToken(response.token);
-          console.log('Dekodirani token:', decoded);
+          console.log('Decoded token:', decoded);
   
           if (decoded) {
             localStorage.setItem('userId', decoded.id);
@@ -50,7 +51,7 @@ export class LoginComponent {
           this.router.navigate(['/dashbord']);
         },
         error: err => {
-          console.error('Greška prilikom logovanja:', err);
+          console.error('Error while login:', err);
         }
       });
     }

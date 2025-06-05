@@ -116,7 +116,6 @@ export class DashbordComponent implements OnInit {
       };
   
       if (this.selectedTraining) {
-        // Ažuriranje postojećeg treninga
         this.trainingService.updateTraining(this.selectedTraining.id, treningPodaci).subscribe({
           next: (response: string) => {
             console.log('Backend response:', response);
@@ -130,7 +129,6 @@ export class DashbordComponent implements OnInit {
         });
   
       } else {
-        // Dodavanje novog treninga
         this.trainingService.createTraining(treningPodaci).subscribe({
           next: () => {
             console.log('Training data succesfully created');
@@ -219,7 +217,6 @@ export class DashbordComponent implements OnInit {
   this.selectedMonth = value;
   const monthDate = new Date(value + '-01');
 
-  // filtriraj sve treninge izabranog meseca
   const filteredTrainings = this.userTrainings.filter(t => {
     const date = new Date(t.dateTime);
     return date.getMonth() === monthDate.getMonth() && date.getFullYear() === monthDate.getFullYear();

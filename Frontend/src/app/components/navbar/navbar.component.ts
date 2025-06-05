@@ -9,5 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
+  
 
 }
